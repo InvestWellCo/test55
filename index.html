@@ -1,94 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Form</title>
+    <title>Invest Well Real Estate</title>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #282827;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
             padding: 20px;
         }
-        form {
-            background-color: white;
+        .form-container {
+            max-width: 600px;
+            margin: auto;
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        input, select, textarea {
+        h1 {
+            color: #005d9e;
+        }
+        label {
+            margin: 10px 0 5px;
+            display: block;
+        }
+        input[type="text"], input[type="email"], select, textarea {
             width: 100%;
             padding: 10px;
-            margin: 10px 0;
+            margin-bottom: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
         }
-        .error {
-            color: #282827;
-            display: none;
-        }
-        button {
+        input[type="submit"] {
             background-color: #800020;
             color: white;
-            padding: 10px;
             border: none;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
         }
-        button:disabled {
+        input[type="submit"]:disabled {
             background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #282827;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <h2>Contact Us</h2>
-    <form id="contactForm" action="https://formspree.io/f/manyeqbn" method="POST">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+    <div class="form-container">
+        <h1>Contact Us</h1>
+        <form id="contact-form" action="https://formspree.io/f/manyeqbn" method="POST" onsubmit="return validateForm();">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
 
-        <label for="phone">Phone</label>
-        <input type="tel" id="phone" name="phone" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
 
-        <label for="inquiry">Inquiry</label>
-        <textarea id="inquiry" name="inquiry" required></textarea>
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone" required>
 
-        <label for="contactMethod">Contact Method</label>
-        <select id="contactMethod" name="contactMethod" required>
-            <option value="">Select...</option>
-            <option value="phone">Phone</option>
-            <option value="whatsapp">WhatsApp</option>
-        </select>
+            <label for="inquiry">Inquiry:</label>
+            <textarea id="inquiry" name="inquiry" required></textarea>
 
-        <div class="error" id="error-message"></div>
-        <button type="submit" id="submitButton" disabled>Submit</button>
-    </form>
+            <label for="contact-method">Preferred Contact Method:</label>
+            <select id="contact-method" name="contact-method" required>
+                <option value="" disabled selected>Select...</option>
+                <option value="phone">Phone</option>
+                <option value="whatsapp">WhatsApp</option>
+            </select>
+
+            <span class="error-message" id="error-message"></span>
+
+            <input type="submit" id="submit-button" value="Submit" disabled>
+        </form>
+    </div>
 
     <script>
-        const form = document.getElementById('contactForm');
-        const submitButton = document.getElementById('submitButton');
+        const form = document.getElementById('contact-form');
+        const submitButton = document.getElementById('submit-button');
         const errorMessage = document.getElementById('error-message');
 
-        form.addEventListener('input', () => {
-            const isValid = form.checkValidity();
-            submitButton.disabled = !isValid;
-        });
+        function validateForm() {
+            // Example of email and phone validation
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+            const phonePattern = /^\+?[0-9]{10,14}$/; // Adjust as per your requirements
 
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            // Add your form submission logic here
-
-            // Example of showing an error message
-            if (!form.checkValidity()) {
-                errorMessage.textContent = 'Please fill in all required fields.';
-                errorMessage.style.display = 'block';
-            } else {
-                // Redirect to the custom thank you page or show a success message
-                window.location.href = 'thank-you.html'; // Adjust this to your thank you page
+            if (!email.match(emailPattern)) {
+                errorMessage.textContent = "Please enter a valid email address.";
+                errorMessage.style.display = "block";
+                return false;
             }
+            if (!phone.match(phonePattern)) {
+                errorMessage.textContent = "Please enter a valid phone number.";
+                errorMessage.style.display = "block";
+                return false;
+            }
+
+            return true; // Allow form submission
+        }
+
+        form.addEventListener('input', () => {
+            const allFilled = [...form.elements].every(input => input.value);
+            submitButton.disabled = !allFilled;
+            errorMessage.style.display = "none"; // Hide error message on input
         });
     </script>
 </body>
